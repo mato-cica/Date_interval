@@ -26,11 +26,11 @@ p.ord {
   </head>
   <body>
     <div class="wrapper">
-      <p class="code">Date_interval(const int &dbegin, const int &dend)</p>
+      <p class="code">Date_interval(<b>const int</b> &dbegin, <b>const int</b> &dend)</p>
       <p class="ord">The Constructor instantiates object, initializes member variables and calculates interval in days between <i>dbegin</i> and <i>dend</i>. Variables <i>dbegin</i> and <i>dend</i> are integers reprezenting dates in form of <i>yyyyddmm</i>.</p> 
 <p class="ord">Example:<br/></p>
 <p class="code">Date_interval d(20150101, 20210101); //<span style="color:gray">object d </span><br/>
-cout << d.get_Interval() << " days." << endl; // <span style="color:gray">2192 days</span>.
+<b>cout</b> << d.get_Interval() << " days." << <b>endl;</b> // <span style="color:gray">2192 days</span>.
 </p>    
         </div>
     <script src="javascripts/scale.fix.js"></script>
