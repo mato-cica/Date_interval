@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Date interval by mato-cica</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    
+    <style>
+p.ord {
+    font-size:90%;
+    color:black;
+    } 
+    p.code {
+    font-family:courier;
+    font-size:90%;
+    color:black;
+    } 
+    </style>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <p class="code">int year(const int &yyyymmdd)</p>
+      <p class="ord">Returns integer -1 when year in <i>yyyymmdd</i> is less then 1000 or greater then 9999, or year in date representing with <i>yyyymmdd</i> Variable. 
+
+<i>yyyymmdd</i> is an integer reprezenting date in form of <i>yyyyddmm</i>.</p> 
+<p class="ord">Example:<br/></p>
+<p class="code">Date_interval d; //<span style="color:gray">object d </span><br/>
+if(d.year(20160912) != -1)
+    cout << d.year(20160912) << "th year." << endl; // <span style="color:gray">2016th year.</span>
+else
+    cout << "Wrong date!" << endl;
+</p>    
+        </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
