@@ -19,17 +19,25 @@ p.ord {
     font-size:90%;
     color:black;
     } 
-    </style> 
+    </style>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
     <div class="wrapper">
-      <p class="code">Date_interval() <br/></p>
-      <p class="ord">Default constructor. Istantiates object without initialization member variables.<br/><br/>
-Example:<br/></p>
-<p class="code">Date_interval d; //<span style="color:gray">instantiation of an object d </span>
+      <p class="code"><b>int</b> day(<b>const int</b> &yyyymmdd)</p>
+      <p class="ord">Returns integer -1 when day in <i>yyyymmdd</i> is less then 1 or greater then 31, 30, 29 in known cases, or 
+
+day in date represented with <i>yyyymmdd</i> variable. Variable <i>yyyymmdd</i> is an integer representing date in form of 
+<i>yyyymmdd</i>.</p> 
+<p class="ord">Example:<br/></p>
+<p class="code">Date_interval d; //<span style="color:gray">object d </span><br/>
+<b>if</b>(d.day(20160912) != -1)<br/>
+ &nbsp;&nbsp;&nbsp;&nbsp;<b>cout</b> << d.day(20160912) << ". day" << <b>endl;</b> // <span style="color:gray">12. day 
+</span><br/>
+else<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<b>cout</b> << "Wrong date!" << <b>endl;</b>
 </p>    
         </div>
     <script src="javascripts/scale.fix.js"></script>
