@@ -93,7 +93,7 @@ a {
 }
 
 a:hover {
-  color:#069;
+  color:#a69;
 }
 
 a small {
@@ -204,7 +204,7 @@ header ul a:hover {
 }
 
 header ul a:active {
-  background-color:#fafafa;
+  background-color:#f0f0f0;
 }
 
 strong {
