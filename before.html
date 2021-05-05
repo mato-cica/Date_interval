@@ -19,17 +19,19 @@ p.ord {
     font-size:90%;
     color:black;
     } 
-    </style> 
+    </style>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
     <div class="wrapper">
-      <p class="code">Date_interval() <br/></p>
-      <p class="ord">Default constructor. Istantiates object without initialization member variables.<br/><br/>
-Example:<br/></p>
-<p class="code">Date_interval d; //<span style="color:gray">instantiation of an object d </span>
+      <p class="code"><b>int</b> before(<b>const int</b> &yyyymmdd, <b>const int</b> &nDays)</p>
+      <p class="ord">Returns date <i>nDays</i> before date <i> yyyymmdd</i>. Variable <i>yyyymmdd</i> is an integer 
+representing date in the form of <i> yyyymmdd</i>.</p> 
+<p class="ord">Example:<br/></p>
+<p class="code">Date_interval d; //<span style="color:gray">object d </span><br/>
+<b>cout</b> << d.before(20201231, 1826) <b>endl;</b> // <span style="color:gray">20160101</span>
 </p>    
         </div>
     <script src="javascripts/scale.fix.js"></script>

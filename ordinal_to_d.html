@@ -19,17 +19,18 @@ p.ord {
     font-size:90%;
     color:black;
     } 
-    </style> 
+    </style>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
     <div class="wrapper">
-      <p class="code">Date_interval() <br/></p>
-      <p class="ord">Default constructor. Istantiates object without initialization member variables.<br/><br/>
-Example:<br/></p>
-<p class="code">Date_interval d; //<span style="color:gray">instantiation of an object d </span>
+      <p class="code"><b>int</b> ordinal_to_d(<b>const int</b> &ordinal, <b>const int</b> &dyear)</p>
+      <p class="ord">Returns date of day whose ordinal number is <i> ordinal</i> in the year <i>dyear</i>.</p> 
+<p class="ord">Example:<br/></p>
+<p class="code">Date_interval d; //<span style="color:gray">object d </span><br/>
+<b>cout</b> << d.ordinal_to_d(60, 2015) <b>endl;</b> // <span style="color:gray">20150301</span>
 </p>    
         </div>
     <script src="javascripts/scale.fix.js"></script>

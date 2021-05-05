@@ -19,17 +19,20 @@ p.ord {
     font-size:90%;
     color:black;
     } 
-    </style> 
+    </style>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
     <div class="wrapper">
-      <p class="code">Date_interval() <br/></p>
-      <p class="ord">Default constructor. Istantiates object without initialization member variables.<br/><br/>
-Example:<br/></p>
-<p class="code">Date_interval d; //<span style="color:gray">instantiation of an object d </span>
+      <p class="code"><b>int</b> get_Interval()</p>
+      <p class="ord">Getter. Returns value of member variable <i> m_interval</i>. This variable is initialized when constructor 
+
+<i>(int, int)</i> is used.</p> 
+<p class="ord">Example:<br/></p>
+<p class="code">Date_interval d(20150101, 20210101); //<span style="color:gray">object d </span><br/>
+<b>cout</b> << d.get_Interval() << " days." << <b>endl;</b> // <span style="color:gray">2192 days.</span>
 </p>    
         </div>
     <script src="javascripts/scale.fix.js"></script>
