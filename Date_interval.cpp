@@ -40,13 +40,14 @@ int Date_interval::day_in_y(const int &yyyymmdd)
         return (nDays + day(yyyymmdd));
     }
 }
+
 int Date_interval::ordinal_to_d(const int &ordinal, const int &dyear)
 {
     int ord_year[12] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     int leap_year[12] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     int ord_sum[12] {31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
     int leap_sum[12] {31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
-    if(ordinal > 366)
+    if(ordinal > 366 || ordinal < 1)
         return -1;
     else
     {
@@ -58,7 +59,7 @@ int Date_interval::ordinal_to_d(const int &ordinal, const int &dyear)
             {
                 for(int i = 0; i < 12; ++i)
                 {
-                    if(ordinal < leap_sum[i])
+                    if(ordinal <= leap_sum[i])
                         return dyear * 10000 + (i + 1) * 100 + leap_year[i] - (leap_sum[i] - ordinal);
                 }
             }
@@ -66,7 +67,7 @@ int Date_interval::ordinal_to_d(const int &ordinal, const int &dyear)
             {
                 for(int i = 0; i < 12; ++i)
                 {
-                    if(ordinal < ord_sum[i])
+                    if(ordinal <= ord_sum[i])
                         return dyear * 10000 + (i + 1) * 100 + ord_year[i] - (ord_sum[i] - ordinal);
                 }
             }
@@ -127,3 +128,45 @@ int Date_interval::day(const int &yyyymmdd)
         return (yyyymmdd % 10000) % 100;
 }
 
+int Date_interval::after(const int &yyyymmdd, const int &nDays)
+{
+    int no_of_years = nDays/365;
+    int leapY_here = 0;
+    int result_year = year(yyyymmdd) + no_of_years;
+    int result_dayInYear = day_in_y(yyyymmdd) + nDays % 365;
+    if(no_of_years < 3)
+    {
+        for(int i = year(yyyymmdd); i < year(yyyymmdd) + no_of_years; i++)
+        {
+           if(leap_y(year(yyyymmdd)))
+                leapY_here = 1;
+        }
+    }
+    if(no_of_years < 4)
+    {
+        if(leapY_here == 0)
+        {
+            return ordinal_to_d(result_dayInYear, result_year);
+        }
+        else
+        {
+            if(month(yyyymmdd) == 1 && day(yyyymmdd) == 1 && nDays == 365)
+                return ordinal_to_d(366, result_year - 1);
+            else
+                return ordinal_to_d(result_dayInYear - 1, result_year);
+        }
+     }
+     else
+        return ordinal_to_d(result_dayInYear - no_of_years/4, result_year);
+}
+
+/*
+Date_interval::Date_interval()
+{
+    //ctor
+}
+
+Date_interval::~Date_interval()
+{
+    //dtor
+} */
