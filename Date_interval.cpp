@@ -73,6 +73,7 @@ int Date_interval::ordinal_to_d(const int &ordinal, const int &dyear)
             }
         }
     }
+    return 0;
 }
 //Calculate interval in days between two dates in yyyymmdd format.
 int Date_interval::calculate(const int &dbegin, const int &dend)
@@ -160,13 +161,128 @@ int Date_interval::after(const int &yyyymmdd, const int &nDays)
         return ordinal_to_d(result_dayInYear - no_of_years/4, result_year);
 }
 
-/*
-Date_interval::Date_interval()
+int Date_interval::before(const int &yyyymmdd, const int &nDays)
 {
-    //ctor
+    int no_of_years = nDays/365;
+    int result_year = 0;
+    int result_dayInYear = 0;
+    int dec31_lastYear = (year(yyyymmdd) - no_of_years) * 10000 + 1231;
+
+    bool yearDiff_1 = 0;
+    bool yearDiff_2 = 0;
+    bool yearDiff_3 = 0;
+    bool yearDiff_4 = 0;
+
+    bool leapY_1up = 0;
+    bool leapY_1or2up = 0;
+    bool leapY_1or2or3up = 0;
+
+    if(nDays % 365 != 0)
+    {
+        if(nDays % 365 <= day_in_y(yyyymmdd))
+        {
+            if(nDays % 365 == day_in_y(yyyymmdd)) // && nDays < 365)
+            {
+                if(nDays < 365)
+                    return (year(yyyymmdd) - 1) * 10000 + 1231;
+                else
+                {
+                    result_year = year(yyyymmdd) - no_of_years;
+                    result_dayInYear = day_in_y(dec31_lastYear) - (nDays - day_in_y(yyyymmdd));
+                    return ordinal_to_d(result_dayInYear, result_year);
+                }
+            }
+            else  /*  nDays % 365 < day_in_y(yyyymmdd)  */
+            {
+                result_year = year(yyyymmdd) - no_of_years;
+                if(nDays < 365)
+                {
+                    result_dayInYear = day_in_y(yyyymmdd) - nDays % 365;
+                    return ordinal_to_d(result_dayInYear, result_year);
+                }
+                else  /* nDays > 365 */
+                {
+                    result_dayInYear = day_in_y(dec31_lastYear) - (nDays - day_in_y(yyyymmdd));
+                    return ordinal_to_d(result_dayInYear, result_year);
+                }
+            }
+        }
+        else  /* nDays % 365 > day_in_y(yyyymmdd) */
+        {
+            result_year = year(yyyymmdd) - no_of_years - 1;
+            dec31_lastYear = result_year * 10000 + 1231;
+            result_dayInYear = day_in_y(dec31_lastYear) - (nDays % 365 - day_in_y(yyyymmdd));
+
+            yearDiff_1 = year(yyyymmdd) - result_year == 1;
+            yearDiff_2 = year(yyyymmdd) - result_year == 2;
+            yearDiff_3 = year(yyyymmdd) - result_year == 3;
+            yearDiff_4 = year(yyyymmdd) - result_year == 4;
+
+            leapY_1up = leap_y(result_year + 1);
+            leapY_1or2up = leap_y(result_year + 1) || leap_y(result_year + 2);
+            leapY_1or2or3up = leap_y(result_year + 1) || leap_y(result_year + 2) || leap_y(result_year + 3);
+
+            if(yearDiff_1 || (yearDiff_2 && !leapY_1up) || (yearDiff_3 && !leapY_1or2up) || (yearDiff_4 && !leapY_1or2or3up))
+                return ordinal_to_d(result_dayInYear, result_year);
+            if((yearDiff_2 && leapY_1up) || (yearDiff_3 && leapY_1or2up) || (yearDiff_4 && leapY_1or2or3up))
+                return ordinal_to_d(result_dayInYear + 1, result_year);
+
+            result_dayInYear = result_dayInYear + (year(yyyymmdd) - result_year)/4;
+
+            if((result_dayInYear > 366) && leap_y(result_year))
+            {
+                result_dayInYear = result_dayInYear - 366;
+                result_year = result_year + 1;
+            }
+            if(result_dayInYear > 365 && !leap_y(result_year))
+            {
+                result_dayInYear = result_dayInYear - 365;
+                result_year = result_year + 1;
+            }
+
+            return ordinal_to_d(result_dayInYear, result_year);
+        }
+    }
+    else   /* nDays % 365 = 0 */
+    {
+        result_year = year(yyyymmdd) - no_of_years;
+        dec31_lastYear = result_year * 10000 + 1231;
+        if(leap_y(yyyymmdd))
+            result_dayInYear = day_in_y(dec31_lastYear) - (366 - day_in_y(yyyymmdd));
+        else
+            result_dayInYear = day_in_y(dec31_lastYear) - (365 - day_in_y(yyyymmdd));
+
+        if(nDays == 0)
+            return yyyymmdd;
+
+        yearDiff_1 = year(yyyymmdd) - result_year == 1;
+        yearDiff_2 = year(yyyymmdd) - result_year == 2;
+        yearDiff_3 = year(yyyymmdd) - result_year == 3;
+
+        leapY_1up = leap_y(result_year + 1);
+        leapY_1or2up = leap_y(result_year + 1) || leap_y(result_year + 2);
+        leapY_1or2or3up = leap_y(result_year + 1) || leap_y(result_year + 2) || leap_y(result_year + 3);
+
+        if((yearDiff_1 && month(yyyymmdd) == 12) && (day(yyyymmdd) == 31 && leapY_1up))
+            return (result_year + 1) * 10000 + 101;
+        if((yearDiff_1 && leapY_1up) || (yearDiff_2 && leapY_1or2up) || (yearDiff_3 && leapY_1or2or3up))
+            return ordinal_to_d(result_dayInYear, result_year);
+        if((yearDiff_1 && !leapY_1up) || (yearDiff_2 && !leapY_1or2up) || (yearDiff_3 && !leapY_1or2or3up))
+            return result_year * 10000 + month(yyyymmdd) * 100 + day(yyyymmdd);
+
+        result_dayInYear = result_dayInYear + (year(yyyymmdd) - result_year)/4;
+
+        if((result_dayInYear > 366) && leap_y(result_year))
+        {
+            result_dayInYear = result_dayInYear - 366;
+            result_year = result_year + 1;
+        }
+        if(result_dayInYear > 365 && !leap_y(result_year))
+        {
+            result_dayInYear = result_dayInYear - 365;
+            result_year = result_year + 1;
+        }
+        return ordinal_to_d(result_dayInYear, result_year);
+    }
 }
 
-Date_interval::~Date_interval()
-{
-    //dtor
-} */

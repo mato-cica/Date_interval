@@ -1,5 +1,7 @@
 #ifndef DATE_INTERVAL_H
 #define DATE_INTERVAL_H
+//#include <iostream>
+//using namespace std;
 
 
 class Date_interval
@@ -15,6 +17,7 @@ class Date_interval
         int get_Interval();
         int ordinal_to_d(const int &ordinal, const int &dyear);
         int after(const int &yyyymmdd, const int &nDays);
+        int before(const int &yyyymmdd, const int &nDays);
         bool leap_y(const int &dYear);
 
         //Date_interval();
