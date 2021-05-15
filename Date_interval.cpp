@@ -128,179 +128,45 @@ int Date_interval::day(const int &yyyymmdd)
     else
         return (yyyymmdd % 10000) % 100;
 }
-
+/* - The Function calculates date nDays after the date yyyymmdd.
+ * - arguments: yyyymmdd is an integer representing date in the form of yyyymmdd,
+ *   nDays integer representing number of days to be added
+ * - return: integer representing the date in the form of yyyymmdd  */
 int Date_interval::after(const int &yyyymmdd, const int &nDays)
 {
-    int no_of_years = nDays / 365;
-    int restDays = nDays % 365;
-    int noOfDaysBY = 365;
-    int result_year = year(yyyymmdd) + no_of_years;
-    int correction = 0;
+    /* If same year - end of story */
+    if(leap_y(year(yyyymmdd)) && ((day(yyyymmdd) + nDays) <= 366))
+        return ordinal_to_d(day(yyyymmdd) + nDays, year(yyyymmdd));
+    if(!leap_y(year(yyyymmdd)) && ((day(yyyymmdd) + nDays) <= 365))
+        return ordinal_to_d(day(yyyymmdd) + nDays, year(yyyymmdd));
+
+    int firstDofY = 0;
+    int daysNextY = 0;
 
     if(leap_y(year(yyyymmdd)))
-    {
-        if(nDays < 366)
-            restDays = nDays % 366;
-        noOfDaysBY = 366;
-    }
+        daysNextY = nDays - (366 - day_in_y(yyyymmdd) + 1);
+    else
+        daysNextY = nDays - (365 - day_in_y(yyyymmdd) + 1);
 
-    bool sameYear = day_in_y(yyyymmdd) + restDays <= noOfDaysBY;
+    firstDofY = (year(yyyymmdd) +1) * 10000 + 101;
 
-    if(sameYear && nDays < noOfDaysBY)
-        result_year = year(yyyymmdd);
-
-    int result_dayInYear = day_in_y(yyyymmdd) + restDays;
-
-    int distFromLeapY = year(yyyymmdd) % 4;
-    //bool nonEff_leapYear = leap_y(year(yyyymmdd)) && day_in_y(yyyymmdd) > 59;
-
-    if(nDays > noOfDaysBY)
-        if(distFromLeapY > result_year % 4)
-        {
-            correction = 1;
-            if(leap_y(result_year))
-                correction = 0;
-        }
-    if(result_dayInYear > noOfDaysBY)
-    {
-        result_dayInYear = result_dayInYear - noOfDaysBY;
-        result_year = result_year + 1;
-    }
-
-    result_dayInYear = result_dayInYear - (result_year - year(yyyymmdd))/4 - correction;
-    if(result_dayInYear < 1)
-    {
-        result_year = result_year - 1;
-        if(leap_y(result_year))
-            result_dayInYear = 366 + result_dayInYear;
-        else
-            result_dayInYear = 365 + result_dayInYear;
-    }
-    return ordinal_to_d(result_dayInYear, result_year);
+    /* Try with 1st of January next year with difference between nDays and 365 (366) and day(yyyymmdd) */
+    after(firstDofY, daysNextY);   // recursion
 }
 
+/* - The Function calculates date nDays before the date yyyymmdd.
+ * - arguments: yyyymmdd is an integer representing date in the form of yyyymmdd,
+ *   nDays integer representing number of days to be subtracted
+ * - return: integer representing the date in the form of yyyymmdd  */
 int Date_interval::before(const int &yyyymmdd, const int &nDays)
 {
-    int no_of_years = nDays/365;
-    int result_year = 0;
-    int result_dayInYear = 0;
-    int dec31_lastYear = (year(yyyymmdd) - no_of_years) * 10000 + 1231;
+    if(day_in_y(yyyymmdd) > nDays)    // Same year
+        return ordinal_to_d(day_in_y(yyyymmdd) - nDays, year(yyyymmdd));
 
-    bool yearDiff_1 = 0;
-    bool yearDiff_2 = 0;
-    bool yearDiff_3 = 0;
-    bool yearDiff_4 = 0;
-
-    bool leapY_1up = 0;
-    bool leapY_1or2up = 0;
-    bool leapY_1or2or3up = 0;
-
-    if(nDays % 365 != 0)
-    {
-        if(nDays % 365 <= day_in_y(yyyymmdd))
-        {
-            if(nDays % 365 == day_in_y(yyyymmdd))
-            {
-                if(nDays < 365)
-                    return (year(yyyymmdd) - 1) * 10000 + 1231; // 31st of December last year
-                else
-                {
-                    result_year = year(yyyymmdd) - no_of_years;
-                    result_dayInYear = day_in_y(dec31_lastYear) - (nDays - day_in_y(yyyymmdd));
-                    return ordinal_to_d(result_dayInYear, result_year);
-                }
-            }
-            else  /*  nDays % 365 < day_in_y(yyyymmdd)  */
-            {
-                result_year = year(yyyymmdd) - no_of_years;
-                if(nDays < 365)
-                {
-                    result_dayInYear = day_in_y(yyyymmdd) - nDays % 365;
-                    return ordinal_to_d(result_dayInYear, result_year);
-                }
-                else  /* nDays > 365 */
-                {
-                    result_dayInYear = day_in_y(dec31_lastYear) - (nDays - day_in_y(yyyymmdd));
-                    return ordinal_to_d(result_dayInYear, result_year);
-                }
-            }
-        }
-        else  /* nDays % 365 > day_in_y(yyyymmdd) */
-        {
-            result_year = year(yyyymmdd) - no_of_years - 1;
-            dec31_lastYear = result_year * 10000 + 1231;
-            result_dayInYear = day_in_y(dec31_lastYear) - (nDays % 365 - day_in_y(yyyymmdd));
-
-            yearDiff_1 = year(yyyymmdd) - result_year == 1;
-            yearDiff_2 = year(yyyymmdd) - result_year == 2;
-            yearDiff_3 = year(yyyymmdd) - result_year == 3;
-            yearDiff_4 = year(yyyymmdd) - result_year == 4;
-
-            leapY_1up = leap_y(result_year + 1);
-            leapY_1or2up = leap_y(result_year + 1) || leap_y(result_year + 2);
-            leapY_1or2or3up = leap_y(result_year + 1) || leap_y(result_year + 2) || leap_y(result_year + 3);
-
-            if(yearDiff_1 || (yearDiff_2 && !leapY_1up) || (yearDiff_3 && !leapY_1or2up) || (yearDiff_4 && !leapY_1or2or3up))
-                return ordinal_to_d(result_dayInYear, result_year);
-            if((yearDiff_2 && leapY_1up) || (yearDiff_3 && leapY_1or2up) || (yearDiff_4 && leapY_1or2or3up))
-                return ordinal_to_d(result_dayInYear + 1, result_year);
-
-            result_dayInYear = result_dayInYear + (year(yyyymmdd) - result_year)/4;
-
-            if((result_dayInYear > 366) && leap_y(result_year))
-            {
-                result_dayInYear = result_dayInYear - 366;
-                result_year = result_year + 1;
-            }
-            if(result_dayInYear > 365 && !leap_y(result_year))
-            {
-                result_dayInYear = result_dayInYear - 365;
-                result_year = result_year + 1;
-            }
-
-            return ordinal_to_d(result_dayInYear, result_year);
-        }
-    }
-    else   /* nDays % 365 = 0 */
-    {
-        result_year = year(yyyymmdd) - no_of_years;
-        dec31_lastYear = result_year * 10000 + 1231;
-        if(leap_y(yyyymmdd))
-            result_dayInYear = day_in_y(dec31_lastYear) - (366 - day_in_y(yyyymmdd));
-        else
-            result_dayInYear = day_in_y(dec31_lastYear) - (365 - day_in_y(yyyymmdd));
-
-        if(nDays == 0)
-            return yyyymmdd;
-
-        yearDiff_1 = year(yyyymmdd) - result_year == 1;
-        yearDiff_2 = year(yyyymmdd) - result_year == 2;
-        yearDiff_3 = year(yyyymmdd) - result_year == 3;
-
-        leapY_1up = leap_y(result_year + 1);
-        leapY_1or2up = leap_y(result_year + 1) || leap_y(result_year + 2);
-        leapY_1or2or3up = leap_y(result_year + 1) || leap_y(result_year + 2) || leap_y(result_year + 3);
-
-        if((yearDiff_1 && month(yyyymmdd) == 12) && (day(yyyymmdd) == 31 && leapY_1up))
-            return (result_year + 1) * 10000 + 101;
-        if((yearDiff_1 && leapY_1up) || (yearDiff_2 && leapY_1or2up) || (yearDiff_3 && leapY_1or2or3up))
-            return ordinal_to_d(result_dayInYear, result_year);
-        if((yearDiff_1 && !leapY_1up) || (yearDiff_2 && !leapY_1or2up) || (yearDiff_3 && !leapY_1or2or3up))
-            return result_year * 10000 + month(yyyymmdd) * 100 + day(yyyymmdd);
-
-        result_dayInYear = result_dayInYear + (year(yyyymmdd) - result_year)/4;
-
-        if((result_dayInYear > 366) && leap_y(result_year))
-        {
-            result_dayInYear = result_dayInYear - 366;
-            result_year = result_year + 1;
-        }
-        if(result_dayInYear > 365 && !leap_y(result_year))
-        {
-            result_dayInYear = result_dayInYear - 365;
-            result_year = result_year + 1;
-        }
-        return ordinal_to_d(result_dayInYear, result_year);
-    }
+    int lastDofY = 0;
+    int daysLastY = nDays - day_in_y(yyyymmdd);
+    lastDofY = (year(yyyymmdd) - 1) * 10000 + 12 * 100 + 31;
+    /* Try with 31st of December last year with difference between nDays and day(yyyymmdd) */
+    before(lastDofY, daysLastY);   // recursion
 }
 
